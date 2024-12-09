@@ -2,19 +2,16 @@
 #include <iostream>
 #include <cmath>
 
-#define MIN_SHARPEN -1
+#define MIN_SHARPEN (-1)
 #define MAX_SHARPEN 5
 #define MAX_BOOST_SHARPEN 9
-#define MIN_EDGE -1
+#define MIN_EDGE (-1)
 #define MAX_EDGE 8
-#define MIN_LAPLACIAN -1
+#define MIN_LAPLACIAN (-1)
 #define MAX_LAPLACIAN 4
 #define MAX_LoG 16
-#define MED_LoG -2
-#define MIN_LoG -1
-
-kernel::kernel() { //default constructor
-}
+#define MED_LoG (-2)
+#define MIN_LoG (-1)
 
 void kernel::printKernel() const {
     //Show kernel values 
