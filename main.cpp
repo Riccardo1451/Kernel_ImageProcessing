@@ -1,6 +1,7 @@
 #include <iostream>
-
-int main()
-{
-
+#include "kernel.h"
+int main(){
+    kernel ker = kernel();
+    ker.setGaussianLaplacianFilter();
+    ker.printKernel();
 }
