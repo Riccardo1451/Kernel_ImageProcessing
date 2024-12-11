@@ -3,6 +3,10 @@
 #include <vector>
 #include <iostream>
 
+image::~image(){
+    imageMatrix.clear();
+}
+
 void image::loadImage(const std::string pathImage) {
     //Create image obj from path
     cv::Mat image = cv::imread(pathImage, cv::IMREAD_GRAYSCALE);
@@ -46,6 +50,66 @@ void image::saveImage(const std::string pathImage) {
     }
 }
 
+void image::addPadding(int const kernelHeight, bool replicate = false) {
+    //Compute padding value
+    int pad = kernelHeight / 2 ;
+
+    //Set new dimension
+    int paddedRows = imageHeight + 2*pad ;
+    int paddedCols = imageWidth + 2*pad ;
+
+    //Allocate new image
+    std::vector<float> paddedImage (paddedRows*paddedCols , 0.0f); //inizialized with zeros
+
+    //Just copy the original image in the middle of the new one
+    for (int i = 0; i < imageHeight; i++) {
+        for (int j = 0; j < imageWidth; j++) {
+            if( i >= pad && j < imageHeight + pad &&
+                j >= pad && j < imageWidth + pad) {
+                paddedImage[i * paddedCols + j] = imageMatrix[(i-pad) * imageWidth + (j-pad)];
+            } else if(replicate) {
+                //Replicate padding using borders
+                int src_i = std::max(0, std::min(i - pad, imageHeight -1));
+                int src_j = std::max(0, std::min(j - pad, imageWidth -1));
+                paddedImage[i*paddedCols + j] = imageMatrix[src_i * imageWidth + src_j];
+            }
+        }
+    }
+
+    //Save the new padded image
+    imageMatrix = paddedImage;
+    imageHeight = paddedRows;
+    imageWidth = paddedCols;
+}
+
+void image::applyConvolution(const kernel& kernel) {
+    //Pad the image based on the kernel to use
+    addPadding(kernel.getKernelHeight(),false);
+
+    //Allocate output vector
+    std::vector<float> output (imageHeight*imageWidth , 0.0f);
+
+    //Compute the convolution
+    for (int i = 0; i < imageHeight; i++) {
+        for (int j = 0; j < imageWidth; j++) {
+            float sum = 0.0f; //To store the local sum
+
+            //Iterate through the kernel
+            for (int ki = 0; ki < kernel.getKernelHeight(); ki++) {
+                for (int kj = 0; kj < kernel.getKernelWidth(); kj++) {
+                    int row = i + ki;
+                    int col = j + kj;
+                    sum += imageMatrix[row*imageWidth+col] *
+                        kernel.getKernel()[ki*kernel.getKernelWidth()+kj];
+                }
+            }
+            //Save the sum in the output matrix
+            output[i*imageWidth + j] = sum;
+        }
+    }
+    //Save new state
+    imageMatrix = output;
+}
 
 std::vector<float> image::getImageMatrix() const {
     return imageMatrix;

@@ -13,6 +13,10 @@
 #define MED_LoG (-2)
 #define MIN_LoG (-1)
 
+kernel::~kernel(){
+    kernelMatrix.clear();
+}
+
 void kernel::printKernel() const {
     //Show kernel values 
     std::cout<< "+---Kernel---+"<<std::endl;

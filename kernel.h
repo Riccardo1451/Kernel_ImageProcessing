@@ -5,7 +5,8 @@
 
 class kernel{
     public:
-    kernel() = default;
+    kernel() = default; //Ctor default
+    ~kernel(); //Dtor
 
     void printKernel() const; //simple print of the matrix values
     void setGaussianFilter(int height, int width, int stdDev); //set the Gaussian values
