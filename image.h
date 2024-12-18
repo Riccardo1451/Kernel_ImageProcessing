@@ -3,6 +3,7 @@
 #include <vector>
 #include "kernel.h"
 #include <opencv2/opencv.hpp>
+#include <cuda_runtime.h>
 
 class image {
 public:
@@ -12,7 +13,10 @@ public:
     void loadImage(std::string pathImage);
     void saveImage(std::string pathImage);
     void addPadding(int kernelHeight, bool replicate);
-    void applyConvolution(const kernel& kernel);
+    void applyConvolution(const kernel& kernel, bool padding);
+
+    //CUDA function
+   __global__ void applyCUDAConvolution(const kernel& kernel, std::vector<float>& output, bool padding);
 
     //Getter
     std::vector<float> getImageMatrix() const;
@@ -20,6 +24,7 @@ public:
     int getImageWidth() const;
 
 private:
+
     std::vector<float> imageMatrix;
     int imageHeight;
     int imageWidth;

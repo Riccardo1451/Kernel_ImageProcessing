@@ -45,7 +45,6 @@ void kernel::kernelBase(std::vector<float>& kernel, int baseWidth, int baseHeigh
         }
     }
 }
-
 void kernel::setGaussianFilter(const int height, const int width, const int stdDev) {
     std::vector<float> kernel(height*width);
     float sum = 0.0;
@@ -75,9 +74,10 @@ void kernel::setGaussianFilter(const int height, const int width, const int stdD
     kernelMatrix = kernel;
     kernelHeight = height;
     kernelWidth = width;
+    kernelType = "GaussianFilter";
 }
 
-void kernel::setSharpenFilter(bool high_boost) {
+void kernel::setSharpenFilter(bool high_boost = false) {
     //Allocate vector
     std::vector<float> kernel(3*3);
     if(high_boost){
@@ -96,6 +96,7 @@ void kernel::setSharpenFilter(bool high_boost) {
     kernelMatrix = kernel;
     kernelHeight = 3;
     kernelWidth = 3;
+    kernelType = "SharpenFilter";
 }
 
 void kernel::setEdgeDetectionFilter() {
@@ -108,6 +109,7 @@ void kernel::setEdgeDetectionFilter() {
     kernelMatrix = kernel;
     kernelHeight = 3;
     kernelWidth = 3;
+    kernelType = "EdgeDetectionFilter";
 }
 
 void kernel::setLaplacianFilter() {
@@ -126,6 +128,7 @@ void kernel::setLaplacianFilter() {
     kernelMatrix = kernel;
     kernelHeight = 3;
     kernelWidth = 3;
+    kernelType = "LaplacianFilter";
 }
 
 void kernel::setGaussianLaplacianFilter() {
@@ -151,6 +154,7 @@ void kernel::setGaussianLaplacianFilter() {
     kernelMatrix = kernel;
     kernelHeight = 5;
     kernelWidth = 5;
+    kernelType = "GaussianLaplacianFilter";
 }
 
 
@@ -163,4 +167,8 @@ int kernel::getKernelWidth() const{
 }
 std::vector<float> kernel::getKernel() const{
     return kernelMatrix;
+}
+
+std::string kernel::getKernelInfo() const {
+    return kernelType;
 }
