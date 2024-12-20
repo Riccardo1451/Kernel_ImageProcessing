@@ -2,7 +2,9 @@
 #define IMAGE_H
 #include <vector>
 #include "kernel.h"
-#include <opencv2/opencv.hpp>
+#include <iostream>
+//CUDA function
+
 
 class image {
 public:
@@ -12,7 +14,8 @@ public:
     void loadImage(std::string pathImage);
     void saveImage(std::string pathImage);
     void addPadding(int kernelHeight, bool replicate);
-    void applyConvolution(const kernel& kernel);
+    void applyConvolution(const kernel& kernel, bool padding);
+
 
     //Getter
     std::vector<float> getImageMatrix() const;
@@ -20,6 +23,7 @@ public:
     int getImageWidth() const;
 
 private:
+
     std::vector<float> imageMatrix;
     int imageHeight;
     int imageWidth;

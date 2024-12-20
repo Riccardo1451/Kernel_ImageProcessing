@@ -2,6 +2,7 @@
 #define KERNEL_H
 
 #include <vector>
+#include <iostream>
 
 class kernel{
     public:
@@ -21,12 +22,15 @@ class kernel{
     int getKernelHeight() const;
     int getKernelWidth() const;
     std::vector<float> getKernel() const;
+    std::string getKernelInfo() const;
 
     private:
     //Linearized matrix of the kernel values
     std::vector<float> kernelMatrix;
     int kernelHeight;
     int kernelWidth;
+
+    std::string kernelType;
 };
 
 #endif // KERNEL_H

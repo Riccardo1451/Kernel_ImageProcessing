@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <iostream>
+#include <omp.h>
 
 image::~image(){
     imageMatrix.clear();
@@ -82,14 +83,21 @@ void image::addPadding(int const kernelHeight, bool replicate = false) {
     imageWidth = paddedCols;
 }
 
-void image::applyConvolution(const kernel& kernel) {
+void image::applyConvolution(const kernel& kernel, bool padding) {
     //Pad the image based on the kernel to use
-    addPadding(kernel.getKernelHeight(),false);
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
+    addPadding(kernel.getKernelHeight(),padding);
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "Execution time to add padding: "<< elapsed_seconds.count() << std::endl;
 
     //Allocate output vector
     std::vector<float> output (imageHeight*imageWidth , 0.0f);
 
     //Compute the convolution
+    start = std::chrono::system_clock::now();
+    #pragma omp parallel for //TODO: try comment this for sequential version
     for (int i = 0; i < imageHeight; i++) {
         for (int j = 0; j < imageWidth; j++) {
             float sum = 0.0f; //To store the local sum
@@ -100,17 +108,21 @@ void image::applyConvolution(const kernel& kernel) {
                     int row = i + ki;
                     int col = j + kj;
                     sum += imageMatrix[row*imageWidth+col] *
-                        kernel.getKernel()[ki*kernel.getKernelWidth()+kj];
+                           kernel.getKernel()[ki*kernel.getKernelWidth()+kj];
                 }
             }
             //Save the sum in the output matrix
             output[i*imageWidth + j] = sum;
         }
     }
+    end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "Convolution time, sequential version: "<<elapsed_seconds.count()<<std::endl;
     //Save new state
     imageMatrix = output;
 }
 
+//GETTER
 std::vector<float> image::getImageMatrix() const {
     return imageMatrix;
 }
