@@ -1,4 +1,5 @@
 #include "image.h"
+#include "CUDA_convolutions.cuh"
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <iostream>
@@ -97,7 +98,7 @@ void image::applyConvolution(const kernel& kernel, bool padding) {
 
     //Compute the convolution
     start = std::chrono::system_clock::now();
-    #pragma omp parallel for //TODO: try comment this for sequential version
+    //#pragma omp parallel for //TODO: try comment this for sequential version
     for (int i = 0; i < imageHeight; i++) {
         for (int j = 0; j < imageWidth; j++) {
             float sum = 0.0f; //To store the local sum
@@ -120,6 +121,12 @@ void image::applyConvolution(const kernel& kernel, bool padding) {
     std::cout << "Convolution time, sequential version: "<<elapsed_seconds.count()<<std::endl;
     //Save new state
     imageMatrix = output;
+}
+void image::applyCUDAConvolution(const kernel &kernel, bool padding) {
+    addPadding(kernel.getKernelHeight(), padding);
+    std::vector<float> tempresult(imageWidth*imageHeight);
+    ::applyCUDAConvolution(imageMatrix, kernel, tempresult,imageWidth, imageHeight);
+    imageMatrix = tempresult;
 }
 
 //GETTER

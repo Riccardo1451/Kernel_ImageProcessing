@@ -16,6 +16,6 @@ int main(){
     im.saveImage(outpath);
 
     im.loadImage("/data01/pc24ricfan/Desktop/Kernel_Code/images/in/3.png");
-   // im.applyCUDAConvolution(ker,false);
+    im.applyCUDAConvolution(ker,false);
     im.saveImage(outpath);
 }

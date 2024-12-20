@@ -29,7 +29,7 @@ __global__ void applyCUDAConvolutionKernel(const float * ker,const float* mat, f
     }
 
 }
-void CUDA_convolutions::applyCUDAConvolution(std::vector<float>& imageMatrix, const kernel& kernel, std::vector<float>& output, int imageWidth, int imageHeight){
+void applyCUDAConvolution(std::vector<float>& imageMatrix, const kernel& kernel, std::vector<float>& output, int imageWidth, int imageHeight){
     //requiresPadding
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
