@@ -3,7 +3,7 @@
 #include <vector>
 #include "kernel.h"
 #include <iostream>
-//CUDA function
+
 
 
 class image {

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 project(Kernel_Code)
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 #Enable CUDA
 enable_language(CUDA)
