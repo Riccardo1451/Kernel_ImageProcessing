@@ -174,14 +174,26 @@ void image::applyConvolution(const kernel& kernel, bool padding) {
     }
     end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "Convolution time, sequential version: "<<elapsed_seconds.count()<<std::endl;
+    std::cout << "Convolution time, using "<< omp_get_num_teams()<<" threads is: "<<elapsed_seconds.count()<<"\n"<<std::endl;
     //Save new state
     imageMatrix = output;
 }
-void image::applyCUDAConvolution(const kernel &kernel, bool padding) {
+void image::applyGlobalCUDAConvolution(const kernel &kernel, bool padding) {
     addPadding(kernel.getKernelHeight(), padding);
     std::vector<float> tempresult(imageWidth*imageHeight);
-    ::applyCUDAConvolution(imageMatrix, kernel, tempresult,imageWidth, imageHeight);
+    ::applyGlobalCUDAConvolution(imageMatrix, kernel, tempresult, imageWidth, imageHeight);
+    imageMatrix = tempresult;
+}
+void image::applyConstantCUDAConvolution(const kernel &kernel, bool padding) {
+    addPadding(kernel.getKernelHeight(), padding);
+    std::vector<float> tempresult(imageWidth*imageHeight);
+    ::applyConstantCUDAConvolution(imageMatrix, kernel, tempresult, imageWidth, imageHeight);
+    imageMatrix = tempresult;
+}
+void image::applySharedCUDAConvolution(const kernel &kernel, bool padding) {
+    addPadding(kernel.getKernelHeight(), padding);
+    std::vector<float> tempresult(imageWidth*imageHeight);
+    ::applySharedCUDAConvolution(imageMatrix, kernel, tempresult, imageWidth, imageHeight);
     imageMatrix = tempresult;
 }
 
@@ -197,3 +209,5 @@ int image::getImageHeight() const {
 int image::getImageWidth() const {
     return imageWidth;
 }
+
+

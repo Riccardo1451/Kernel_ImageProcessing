@@ -17,7 +17,9 @@ public:
     void applyConvolution(const kernel& kernel, bool padding);
 
     //CUDA wrap
-    void applyCUDAConvolution(const kernel& kernel, bool padding);
+    void applyGlobalCUDAConvolution(const kernel& kernel, bool padding);
+    void applyConstantCUDAConvolution(const kernel& kernel, bool padding);
+    void applySharedCUDAConvolution(const kernel& kernel, bool padding);
     //Getter
     std::vector<float> getImageMatrix() const;
     int getImageHeight() const;

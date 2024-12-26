@@ -5,7 +5,7 @@
 
 int main(){
     kernel ker = kernel();
-    ker.setLaplacianFilter();
+    ker.setGaussianFilter(7,7,2);
     ker.printKernel();
 
     std::string outpath ="/data01/pc24ricfan/Desktop/Kernel_Code/images/out/"+ker.getKernelInfo()+".png";
@@ -17,7 +17,15 @@ int main(){
     im.saveImage(outpath);
 
     im.loadImage("/data01/pc24ricfan/Desktop/Kernel_Code/images/in/3.png");
-    im.applyCUDAConvolution(ker,true);
+    im.applyGlobalCUDAConvolution(ker, true);
+    im.saveImage(outpathCUDA);
+
+    im.loadImage("/data01/pc24ricfan/Desktop/Kernel_Code/images/in/3.png");
+    im.applyConstantCUDAConvolution(ker, true);
+    im.saveImage(outpathCUDA);
+
+    im.loadImage("/data01/pc24ricfan/Desktop/Kernel_Code/images/in/3.png");
+    im.applySharedCUDAConvolution(ker, true);
     im.saveImage(outpathCUDA);
 
 }
